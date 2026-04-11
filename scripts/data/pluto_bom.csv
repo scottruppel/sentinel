@@ -1,0 +1,36 @@
+Reference,Manufacturer Part Number,Manufacturer,Description,Qty,Value,Package,Category
+U1,AD9363BBCZ,Analog Devices,RF Agile Transceiver,1,,LFCSP-48,IC
+U2,XC7Z010-1CLG225C,AMD/Xilinx,Zynq-7000 SoC FPGA,1,,CSG225,IC
+U3,MT41K256M16TW-107:P,Micron,DDR3L SDRAM 4Gb x16 1866 MHz,1,,FBGA-96,IC
+U4,W25Q128JVSIQ,Winbond,128Mbit SPI Flash NOR,1,,SOIC-8,IC
+U5,ADP2370ACPZ-3.3-R7,Analog Devices,800 mA Step-Down Regulator 3.3V,1,,LFCSP-10,IC
+U6,ADP7118ACPZN-3.3-R7,Analog Devices,200 mA Low Noise LDO 3.3V,1,,TSOT-5,IC
+U7,ADP7118ACPZN-1.0-R7,Analog Devices,200 mA Low Noise LDO 1.0V,1,,TSOT-5,IC
+U8,ADP7118ACPZN-1.3-R7,Analog Devices,200 mA Low Noise LDO 1.3V,1,,TSOT-5,IC
+U9,ATECC608A-MAHDA-S,Microchip,Crypto Authentication IC,1,,DFN-8,IC
+U10,ADP1613ARMZ-R7,Analog Devices,650 kHz Step-Up PWM DC-DC Converter,1,,MSOP-10,IC
+U11,ADM7150ACPZ-3.3-R7,Analog Devices,800 mA Ultralow Noise LDO,1,,LFCSP-8,IC
+U12,LM75BDP,NXP,Digital Temperature Sensor I2C,1,,TSSOP-8,IC
+U13,FUSB302BMPX,ON Semiconductor,USB Type-C Controller,1,,MLP-14,IC
+U14,AD8138ARMZ,Analog Devices,Low Distortion Differential ADC Driver,1,,MSOP-8,IC
+"C1,C2,C3,C4,C5,C6,C7,C8",CL05B104KO5NNNC,Samsung Electro-Mechanics,100nF 16V X7R MLCC,8,100nF,0402,Capacitor
+"C9,C10,C11,C12",GRM155R60J475ME47D,Murata,4.7uF 6.3V X5R MLCC,4,4.7uF,0402,Capacitor
+"C13,C14",GRM188R61A106KE69D,Murata,10uF 10V X5R MLCC,2,10uF,0603,Capacitor
+"C15,C16",GRM21BR61C226ME44L,Murata,22uF 16V X5R MLCC,2,22uF,0805,Capacitor
+"C17,C18,C19,C20",C0402C100J5GACTU,KEMET,10pF 50V C0G MLCC,4,10pF,0402,Capacitor
+"R1,R2,R3,R4,R5,R6",RC0402FR-0710KL,Yageo,10k 1% 0402 Resistor,6,10k,0402,Resistor
+"R7,R8,R9,R10",RC0402FR-074K99L,Yageo,4.99k 1% 0402 Resistor,4,4.99k,0402,Resistor
+"R11,R12,R13,R14",RC0402FR-07100KL,Yageo,100k 1% 0402 Resistor,4,100k,0402,Resistor
+"R15,R16",RC0402FR-070RL,Yageo,0R Jumper 0402,2,0R,0402,Resistor
+"L1,L2,L3",LQM18FN4R7M00D,Murata,4.7uH Ferrite Bead Inductor,3,4.7uH,0603,Inductor
+"L4,L5",BLM15AG601SN1D,Murata,Ferrite Bead 600R @ 100MHz,2,600R@100MHz,0402,Inductor
+"D1,D2",LTST-C191KGKT,Lite-On,Green LED 0603,2,,0603,LED
+D3,LTST-C191KRKT,Lite-On,Red LED 0603,1,,0603,LED
+J1,10118193-0001LF,Amphenol,USB Micro-B Receptacle,1,,SMT,Connector
+"J2,J3",U.FL-R-SMT-1(10),Hirose,U.FL Coaxial Connector,2,,SMT,Connector
+"Y1",ECS-2520MV-250-BN-TR,ECS Inc,25 MHz Crystal Oscillator,1,25MHz,2.5x2.0mm,Oscillator
+"Y2",ECS-2520MV-400-BN-TR,ECS Inc,40 MHz Crystal Oscillator,1,40MHz,2.5x2.0mm,Oscillator
+SW1,KMR221GLFS,C&K,SPST Tactile Switch SMT,1,,SMT,Switch
+"FB1,FB2",BLM15HD182SN1D,Murata,Ferrite Bead 1800R @ 100MHz,2,1800R@100MHz,0402,Inductor
+ANT1,ANT-2.4-CHP-T,Johanson Technology,2.4GHz Chip Antenna,1,,0603,Antenna
+BAL1,HHM1595A1,TDK,Balun Transformer 2.4GHz,1,,0402,IC

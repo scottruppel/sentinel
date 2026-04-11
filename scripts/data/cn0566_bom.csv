@@ -1,0 +1,59 @@
+Reference,Manufacturer Part Number,Manufacturer,Description,Qty,Value,Package,Category
+"U1,U2,U3,U4",ADAR1000BCPZ,Analog Devices,X-Band 4-Channel Beamformer RFIC,4,,LFCSP-52,IC
+U5,ADAR3000BCPZ,Analog Devices,X-Band Core IC 8-Channel Beamformer,1,,LFCSP-88,IC
+U6,AD9363BBCZ,Analog Devices,RF Agile Transceiver,1,,LFCSP-48,IC
+U7,ADF4159CCPZ,Analog Devices,13 GHz Fractional-N Frequency Synthesizer,1,,LFCSP-24,IC
+U8,HMC1119LP4CE,Analog Devices,0.25 dB LSB 7-Bit Digital Attenuator,1,,LCC-24,IC
+U9,HMC637ALP5E,Analog Devices,GaAs pHEMT MMIC Power Amplifier,1,,SMT-24,IC
+U10,ADP7118ACPZN-3.3-R7,Analog Devices,200 mA Low Noise LDO 3.3V,1,,TSOT-5,IC
+U11,ADP7118ACPZN-5.0-R7,Analog Devices,200 mA Low Noise LDO 5.0V,1,,TSOT-5,IC
+"U12,U13",ADP2370ACPZ-3.3-R7,Analog Devices,800 mA Step-Down Regulator 3.3V,2,,LFCSP-10,IC
+U14,ADP2370ACPZ-5.0-R7,Analog Devices,800 mA Step-Down Regulator 5.0V,1,,LFCSP-10,IC
+U15,ADL5903ACPZN-R7,Analog Devices,10 MHz to 10 GHz 45 dB TruPwr Detector,1,,LFCSP-8,IC
+U16,ADRF5024BCPZ,Analog Devices,100 MHz to 44 GHz Silicon SPDT Switch,1,,LFCSP-16,IC
+"U17,U18",LTC6655BHMS8-3.3#PBF,Analog Devices,0.25 ppm Noise Precision Voltage Reference 3.3V,2,,MSOP-8,IC
+U19,XC7Z010-1CLG225C,AMD/Xilinx,Zynq-7000 SoC FPGA,1,,CSG225,IC
+U20,MT41K256M16TW-107:P,Micron,DDR3L SDRAM 4Gb x16 1866 MHz,1,,FBGA-96,IC
+U21,W25Q128JVSIQ,Winbond,128Mbit SPI Flash NOR,1,,SOIC-8,IC
+U22,ATECC608A-MAHDA-S,Microchip,Crypto Authentication IC,1,,DFN-8,IC
+U23,LM75BDP,NXP,Digital Temperature Sensor I2C,1,,TSSOP-8,IC
+U24,TCA9548APWR,Texas Instruments,8-Channel I2C Switch/Multiplexer,1,,TSSOP-24,IC
+"U25,U26",SN74LVC1G08DBVR,Texas Instruments,Single 2-Input AND Gate,2,,SOT-23-5,IC
+U27,SN74LVC1G32DBVR,Texas Instruments,Single 2-Input OR Gate,1,,SOT-23-5,IC
+J1,SAMTEC-QSH-030-01-L-D-A,Samtec,High-Speed Board-to-Board Connector 60-pin,1,,SMT,Connector
+J2,SMA-J-P-H-ST-EM1,Molex,SMA Edge Mount Jack,1,,Edge Mount,Connector
+"J3,J4",U.FL-R-SMT-1(10),Hirose,U.FL Coaxial Connector,2,,SMT,Connector
+J5,61300211121,Wurth Elektronik,2-Pin Header 2.54mm,1,,Through Hole,Connector
+J6,M20-9990246,Harwin,2x20 GPIO Header RPi Compatible,1,,Through Hole,Connector
+"C1,C2,C3,C4,C5,C6,C7,C8,C9,C10",CL05B104KO5NNNC,Samsung Electro-Mechanics,100nF 16V X7R MLCC,10,100nF,0402,Capacitor
+"C11,C12,C13,C14,C15",GRM155R71C104KA88D,Murata,100nF 16V X7R MLCC,5,100nF,0402,Capacitor
+"C16,C17,C18,C19,C20",CL05A105KA5NQNC,Samsung Electro-Mechanics,1uF 25V X5R MLCC,5,1uF,0402,Capacitor
+"C21,C22,C23,C24",GRM155R60J475ME47D,Murata,4.7uF 6.3V X5R MLCC,4,4.7uF,0402,Capacitor
+"C25,C26",GRM188R61A106KE69D,Murata,10uF 10V X5R MLCC,2,10uF,0603,Capacitor
+"C27,C28",GRM21BR61C226ME44L,Murata,22uF 16V X5R MLCC,2,22uF,0805,Capacitor
+"C29,C30,C31,C32",C0402C100J5GACTU,KEMET,10pF 50V C0G MLCC,4,10pF,0402,Capacitor
+"C33,C34,C35,C36",C0402C180J5GACTU,KEMET,18pF 50V C0G MLCC,4,18pF,0402,Capacitor
+"C37,C38",C0402C220J5GACTU,KEMET,22pF 50V C0G MLCC,2,22pF,0402,Capacitor
+"R1,R2,R3,R4,R5,R6,R7,R8,R9,R10",RC0402FR-0710KL,Yageo,10k 1% 0402 Resistor,10,10k,0402,Resistor
+"R11,R12,R13,R14,R15",RC0402FR-074K99L,Yageo,4.99k 1% 0402 Resistor,5,4.99k,0402,Resistor
+"R16,R17,R18,R19,R20",RC0402FR-07100KL,Yageo,100k 1% 0402 Resistor,5,100k,0402,Resistor
+"R21,R22,R23,R24",RC0402FR-071KL,Yageo,1k 1% 0402 Resistor,4,1k,0402,Resistor
+"R25,R26",RC0402FR-0749R9L,Yageo,49.9 1% 0402 Resistor,2,49.9,0402,Resistor
+"R27,R28,R29,R30",RC0402FR-070RL,Yageo,0R Jumper 0402,4,0R,0402,Resistor
+"R31,R32",CRCW04020000Z0ED,Vishay,0R Jumper 0402 (alt),2,0R,0402,Resistor
+"R33,R34,R35,R36",RC0402FR-07330RL,Yageo,330R 1% 0402 Resistor,4,330R,0402,Resistor
+"L1,L2,L3,L4",LQM18FN4R7M00D,Murata,4.7uH Ferrite Bead Inductor,4,4.7uH,0603,Inductor
+"L5,L6",BLM15AG601SN1D,Murata,Ferrite Bead 600R @ 100MHz,2,600R@100MHz,0402,Inductor
+"L7,L8",LQM18FN100M00D,Murata,10uH Inductor,2,10uH,0603,Inductor
+"D1,D2,D3,D4",LTST-C191KGKT,Lite-On,Green LED 0603,4,,0603,LED
+D5,LTST-C191KRKT,Lite-On,Red LED 0603,1,,0603,LED
+D6,BAT54S-7-F,Diodes Inc,Dual Schottky Barrier Diode,1,,SOT-23,Diode
+"Y1",ECS-2520MV-100-BN-TR,ECS Inc,10 MHz MEMS Oscillator,1,10MHz,2.5x2.0mm,Oscillator
+"Y2",ECS-2520MV-250-BN-TR,ECS Inc,25 MHz Crystal Oscillator,1,25MHz,2.5x2.0mm,Oscillator
+"TP1,TP2,TP3,TP4,TP5,TP6,TP7,TP8",5001,Keystone Electronics,Test Point Miniature,8,,SMT,Test Point
+"F1",0468003.NR,Littelfuse,3A Nano SMD Fuse,1,3A,0603,Fuse
+SW1,KMR221GLFS,C&K,SPST Tactile Switch SMT,1,,SMT,Switch
+SW2,JS202011SCQN,C&K,DPDT Slide Switch,1,,Through Hole,Switch
+"FB1,FB2,FB3,FB4",BLM15HD182SN1D,Murata,Ferrite Bead 1800R @ 100MHz,4,1800R@100MHz,0402,Inductor
+PCB1,CN0566-PCB,Custom,CN0566 4-Layer PCB FR4,1,,Custom,PCB
+ANT1,PATCH-ARRAY-10GHZ,Custom,8-Element Patch Antenna Array 10 GHz,1,,Custom,Antenna
