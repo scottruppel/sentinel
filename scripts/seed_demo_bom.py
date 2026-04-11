@@ -142,6 +142,45 @@ async def seed_pluto(session: AsyncSession) -> Bom:
     return bom
 
 
+async def seed_industrial_edge(session: AsyncSession) -> Bom:
+    """Seed the Industrial Edge Compute BOM with different risk profile."""
+    csv_path = ROOT / "scripts" / "data" / "industrial_edge_bom.csv"
+    if not csv_path.exists():
+        log.warning("industrial_edge_bom_not_found", path=str(csv_path))
+        return None
+
+    content = csv_path.read_bytes()
+    result = parse_csv(content)
+
+    bom = Bom(
+        name="Industrial IoT Edge Compute Platform",
+        description="Cost-optimized edge AI/ML compute platform for industrial IoT with distributed sensors and connectivity. Multi-vendor approach with geographic diversity.",
+        program="Industrial Edge AI",
+        source_filename="industrial_edge_bom.csv",
+        component_count=len(result.components),
+    )
+    session.add(bom)
+    await session.flush()
+
+    for pc in result.components:
+        session.add(Component(
+            bom_id=bom.id,
+            mpn=pc.mpn,
+            mpn_normalized=pc.mpn_normalized,
+            manufacturer=pc.manufacturer,
+            reference_designator=pc.reference_designator,
+            quantity=pc.quantity,
+            description=pc.description,
+            value=pc.value,
+            package=pc.package,
+            category=pc.category,
+        ))
+
+    await session.commit()
+    log.info("industrial_edge_bom_created", bom_id=str(bom.id), components=len(result.components))
+    return bom
+
+
 async def main():
     from scripts.generate_synthetic_enrichment import generate_synthetic_enrichment
     from sentinel.risk.scorer import score_bom
@@ -163,6 +202,12 @@ async def main():
             await generate_synthetic_enrichment(session, pluto.id)
             pluto_summary = await score_bom(session, pluto.id)
             log.info("pluto_risk_complete", overall=pluto_summary["overall_score"])
+
+        industrial_edge = await seed_industrial_edge(session)
+        if industrial_edge:
+            await generate_synthetic_enrichment(session, industrial_edge.id)
+            edge_summary = await score_bom(session, industrial_edge.id)
+            log.info("industrial_edge_risk_complete", overall=edge_summary["overall_score"], critical=edge_summary["critical_count"])
 
         log.info("seeding_scenarios")
         await seed_scenarios(session, bom)

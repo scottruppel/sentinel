@@ -1,0 +1,49 @@
+Reference,Manufacturer Part Number,Manufacturer,Description,Qty,Value,Package,Category
+U1,STM32H743ZIT6,STMicroelectronics,ARM Cortex-M7 MCU 2MB Flash Industrial Temp,1,,LQFP-144,IC
+U2,W25Q256JVFIQ,Winbond,256Mbit SPI Flash Memory Industrial,1,,SOIC-8,IC
+U3,IS62WVS512KB35LL,ISSI,512K x 8 SRAM 3.3V,1,,TSSOP-32,IC
+U4,M95256-DFDW6TP,ST Microelectronics,256Kb Serial Flash EEPROM,1,,SOIC-8,IC
+U5,SN75176BTDR,Texas Instruments,Differential Bus Transceiver RS-485,2,,SOIC-8,IC
+U6,LT1763ACS8-5,Linear Technology,5V 500mA Ultralow Noise Regulator,1,,SO-8,IC
+U7,LT3086EDD,Linear Technology,Low Dropout 200mA Linear Regulator,1,,DFN-8,IC
+U8,LM358PWR,Texas Instruments,Dual Op-Amp General Purpose,2,,TSSOP-8,IC
+U9,TL4052CDR,Texas Instruments,Single Supply Op-Amp Rail-to-Rail,1,,SOIC-8,IC
+U10,PCF8574TW,NXP,Remote 8-Bit I2C I/O Expander,1,,TSSOP-16,IC
+U11,DS3231MZ,Maxim Integrated,Low-Cost I2C Real-Time Clock,1,,TSSOP-8,IC
+U12,DRV8825PWP,Texas Instruments,Stepper Motor Driver 45V 2.5A,1,,TSSOP-28,IC
+U13,ESP32-D0WD,Espressif,Dual-Core WiFi+BLE SoC,1,,QFN-48,IC
+U14,GD32VF103RBT6,GigaDevice,RISC-V 32-bit MCU 128KB Flash,1,,LQFP-100,IC
+U15,RTL8201F-VB-CG,Realtek,Single-Port Fast Ethernet PHY,1,,QFN-28,IC
+U16,TJA1100T,NXP,TJA1100 T/S PHY Single-Port 10BASE-T1L,1,,QFN-24,IC
+U17,AMS1117-3.3,AMS,LDO Linear Regulator 3.3V 1A,2,,SOT-223,IC
+U18,AP2114HA5,Diodes Inc,800mA Low Dropout Linear Regulator,1,,SOT-223,IC
+U19,XC3S500E-4CPG132C,AMD/Xilinx,Spartan-3E FPGA (Legacy/Discontinued),1,,TQFP-132,IC
+U20,TM4C129DNCPDT,Texas Instruments,Tiva C Series MCU 1MB Flash Industrial,1,,LQFP-144,IC
+U21,ATMEGA2560-16AU,Microchip,ATmega Microcontroller 256KB Flash,1,,TQFP-100,IC
+U22,FM25W256B-G,Cypress,256Kb FRAM Ferroelectric RAM,1,,SOIC-8,IC
+U23,BMP388,Bosch,Pressure/Temperature Sensor SPI I2C,1,,LGA-8,IC
+U24,BME680,Bosch,Environmental Sensor IAQ/VOC,1,,BGA-24,IC
+U25,ADS1115IDGST,Texas Instruments,16-Bit I2C ADC 860 SPS,1,,TSSOP-10,IC
+U26,MCP3208-CI,Microchip,8-Channel SPI 12-Bit ADC,1,,TSSOP-16,IC
+U27,DAC8552IDGSR,Texas Instruments,Dual 16-Bit SPI DAC,1,,TSSOP-16,IC
+U28,PCA9548APW,NXP,8-Channel I2C Multiplexer,1,,TSSOP-24,IC
+U29,CAP1188-1-QFN28,Microchip,8-Channel Capacitive Touch Controller,1,,QFN-28,IC
+U30,BNO055,Bosch,Intelligent 9-Axis Absolute Orientation Sensor,1,,BGA-28,IC
+C1-C50,GRM155R61A106KE19D,Murata,10uF 10V X5R MLCC,50,10uF,0402,Capacitor
+C51-C100,GRM155R70J105KA12D,Murata,1uF 6.3V X5R MLCC,50,1uF,0402,Capacitor
+C101-C150,CL10B104KB8NNNNC,Samsung,100nF 16V X7R MLCC,50,100nF,0402,Capacitor
+C151-C200,GRM188R61A476KE19D,Murata,47uF 10V X5R MLCC,50,47uF,0603,Capacitor
+R1-R50,RT0402BRD071KL,Yageo,1kΩ 0.1W 1% Metal Film,50,1k,0402,Resistor
+R51-R100,RT0402BRD0710KL,Yageo,10kΩ 0.1W 1% Metal Film,50,10k,0402,Resistor
+R101-R150,CRCW0603100KFKEA,Vishay,100kΩ 0.1W 1% Thick Film,50,100k,0603,Resistor
+L1-L10,IHLP-1616MB-01,Vishay,10uH 3.5A SMD Inductor,10,10uH,1616,Inductor
+Q1,BC847BDW1T1G,ON Semiconductor,PNP BJT General Purpose -100mA,1,,SOT-323,Transistor
+Q2,IRFZ44NPBF,Infineon,N-Channel Power MOSFET 50A,1,,TO-220,Transistor
+D1,1N4148WS,Vishay,High Speed Switching Diode,3,,SOD-323,Diode
+D2,STPS3045CW,STMicroelectronics,Schottky Rectifier 30A 45V,2,,TO-247,Diode
+LED1,LTST-C171KRKT,Lite-On,Red 0603 LED 2mA,1,,0603,LED
+LED2,LTST-C171GKRT,Lite-On,Green 0603 LED 2mA,1,,0603,LED
+SW1,TS-1188-6-250-GJ,Xinda,6x6x5mm Tactile Switch,2,,6x6x5mm,Switch
+JP1,22-05-3021,Molex,2.54mm Right Angle Header 40pin,1,,DIP40,Connector
+USB1,10118192-0001LF,Amphenol,USB Micro-B Receptacle,1,,SMD,Connector
+J1,RJ-45 8P8C,Amphenol,RJ-45 Ethernet Connector,1,,RJ-45,Connector
