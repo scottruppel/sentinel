@@ -60,6 +60,10 @@ So you're betting on supply chain health with almost no visibility."
 
 This is the risk profile of a company that's using mature, well-proven components — great for performance, terrible for supply chain resilience."
 
+**[Optional — Intelligence analysis]**
+
+If you have enabled the local intelligence layer (public headlines ingested + optional Ollama): expand a component row and click **Run analysis**. You can narrate: *"We keep the full BOM local; the system packages scores and enrichment with public market context and produces an auditable narrative—facts, interpretation, actions, and citations—not a black box."*
+
 ---
 
 ## Act 3: The Differentiator — What-If Analysis (5 min)

@@ -22,6 +22,13 @@ class Settings(BaseSettings):
     # Comma-separated source order (first wins per field when merging for scoring/UI)
     enrichment_source_priority: str = "siliconexpert,z2data,nexar,synthetic"
 
+    # Intelligence / OpenAI-compatible LLM (Ollama: http://127.0.0.1:11434/v1)
+    llm_enabled: bool = False
+    llm_base_url: str = "http://127.0.0.1:11434/v1"
+    llm_model: str = "llama3.2"
+    llm_api_key: str = ""
+    llm_max_tokens: int = 1200
+
     model_config = {"env_file": ".env", "env_file_encoding": "utf-8"}
 
     def enrichment_priority_tuple(self) -> tuple[str, ...]:

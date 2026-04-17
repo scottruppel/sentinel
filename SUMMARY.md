@@ -372,16 +372,36 @@ Scenario                                          (standalone, references BOMs b
 | Seed BOM (CN0566) | `scripts/data/cn0566_bom.csv` with ~60 curated components | Done |
 | Second BOM (ADALM-PLUTO) | `scripts/data/pluto_bom.csv` with ~45 components, shared MPNs | Done |
 | Pre-built scenarios seeded | 3 scenarios created and executed by `seed_demo_bom.py` | Done |
-| Unit tests (ingest, enrichment, risk, what-if) | `backend/tests/test_*.py` — all passing | Done |
-| REST API (BOM, enrichment, risk, scenarios, export) | FastAPI routers in each module | Done |
+| Unit tests (ingest, enrichment, risk, what-if, intelligence) | `backend/tests/test_*.py` — all passing | Done |
+| REST API (BOM, enrichment, risk, scenarios, export, intelligence) | FastAPI routers in each module | Done |
 | Structured logging | `structlog` configured throughout backend | Done |
 | CORS configuration | FastAPI middleware configured in `main.py` | Done |
+| Local intelligence (Tier B/C packaging, optional LLM, public market events) | `intelligence/` — policy, context packager, OpenAI-compatible client, RSS/CSV ingest, `market_events` / `llm_audit_logs` | Done |
+| Intelligence UI (component narrative, citations, LLM toggles) | `frontend/.../BomDetail.tsx` | Done |
 
 ---
 
-## 6. Ideas for Scaling
+## 6. Local Intelligence Layer
 
-### 6.1 Near-Term Enhancements (Next 1–3 Months)
+SENTINEL adds an optional **local-first intelligence** path on top of deterministic scoring: **Tier B** structured context (merged enrichment + risk scores + factors, with BOM/program names redacted by default) and **Tier C** public market headlines ingested locally (RSS/Atom or CSV). An OpenAI-compatible endpoint (e.g. Ollama at `http://127.0.0.1:11434/v1`) can synthesize **auditable** narrative sections (`facts_used`, `interpretation`, `portfolio_impact`, `actions`, `citations`); if the LLM is disabled or unreachable, the same schema is filled using **rules**. Remote non-localhost LLM calls require an explicit **allow remote** flag plus configuration.
+
+| Capability | Location / API |
+|------------|----------------|
+| Data tier policy & redaction | `intelligence/policy.py` (`POLICY_VERSION`, `RedactionPolicy`) |
+| Minimized prompt payload | `intelligence/context_packager.py` |
+| LLM client (chat completions + JSON parse) | `intelligence/llm_client.py` |
+| Narrative orchestration + audit rows | `intelligence/narrative.py` → `llm_audit_logs` table |
+| Public signal ingest & matching | `intelligence/signals.py` → `market_events` table |
+| REST | `POST /api/intelligence/narrative/{component_id}`, `GET /api/intelligence/market-events`, `POST /api/intelligence/market-events/ingest-rss`, `POST /api/intelligence/market-events/ingest-csv`, `GET /api/intelligence/settings` |
+| Readiness | `GET /api/ready` includes `checks.intelligence` |
+
+Environment variables (see `backend/sentinel/config.py`): `LLM_ENABLED`, `LLM_BASE_URL`, `LLM_MODEL`, `LLM_API_KEY` (optional), `LLM_MAX_TOKENS`.
+
+---
+
+## 7. Ideas for Scaling
+
+### 7.1 Near-Term Enhancements (Next 1–3 Months)
 
 **Live API Integration**
 - Acquire SiliconExpert and Z2Data trial access. The stub providers are wired and ready — adding real implementations requires filling in HTTP calls and response mapping. Z2Data in particular unlocks sub-tier supplier and manufacturing site data, which would make geographic risk scores far more granular (per-fabrication-site rather than per-company-headquarters).
@@ -389,13 +409,13 @@ Scenario                                          (standalone, references BOMs b
 **Trend Tracking**
 - The data model already supports versioned enrichment and risk scores. Build a scheduled re-enrichment job (daily or weekly) and a Snapshot comparison view showing how component risk scores drift over time. Alert when a component's composite score crosses a threshold boundary (e.g., Medium → High).
 
-**LLM-Assisted Recommendations**
-- Replace the rule-based recommendation generator with an LLM call that receives the component's risk factors, enrichment data, and known alternates, then produces a nuanced mitigation plan. The structured `risk_factors` JSON already provides the context an LLM would need.
+**LLM-assisted narrative (implemented)**
+- Optional OpenAI-compatible LLM + rules fallback; Tier B/C packaging with default redaction of BOM/program metadata. Extend with alternate-part shortlists when SiliconExpert/Nexar cross-refs are fully wired.
 
 **PDF Report Generation**
 - Extend the Markdown export with a PDF renderer (e.g., WeasyPrint or ReportLab) for formal distribution to program managers and customers.
 
-### 6.2 Medium-Term Architecture (3–6 Months)
+### 7.2 Medium-Term Architecture (3–6 Months)
 
 **Graph Database Layer**
 - Add Neo4j alongside PostgreSQL for supplier relationship traversal. Model: `Component → Manufacturer → Fab Site → Country`. Graph queries like "show me all components 2 hops from a Chinese fab" become natural. The relational model works for PoC but graph traversal becomes essential when mapping Tier 2/3 sub-suppliers.
@@ -409,7 +429,7 @@ Scenario                                          (standalone, references BOMs b
 **Proactive Monitoring Agent**
 - Scheduled background agent that re-queries enrichment providers on a cadence and compares to the stored baseline. Generates alerts like: "AD9363 lead time increased 40% in 30 days — 3 of 5 distributors at zero stock." Push to email, Slack, or Teams.
 
-### 6.3 Long-Term Platform Vision (6–12+ Months)
+### 7.3 Long-Term Platform Vision (6–12+ Months)
 
 **Multi-Tenancy**
 - Add user authentication, organizations, and role-based access control. Each organization sees only its BOMs and scenarios. Required for any shared or hosted deployment.
@@ -424,14 +444,14 @@ Scenario                                          (standalone, references BOMs b
 - When a high-risk component is flagged, automatically pull cross-references from SiliconExpert and Nexar, filter by (active lifecycle, multi-source, in-stock, compliant), rank by parametric similarity, and present a curated shortlist. An LLM agent generates the trade-off analysis.
 
 **Real-Time Geopolitical Signal Monitoring**
-- Integrate news feeds (GDELT, NewsAPI) and SEC EDGAR filings to detect early warning signals: factory fires, sanctions announcements, supplier financial distress, natural disasters. Correlate events to manufacturing sites via Z2Data's site mapping to predict which components are affected before the impact hits distributor inventory.
+- Extend beyond RSS/CSV: integrate GDELT, NewsAPI, SEC EDGAR filings, and correlate to sites via Z2Data when available. The `market_events` model and matching hooks are the integration points.
 
 **Federated Deployment**
 - Support air-gapped / classified enclaves with offline-capable operation. Periodically sync enrichment data bundles into isolated environments. Critical for defense programs operating on classified networks.
 
 ---
 
-## 7. Technology Stack
+## 8. Technology Stack
 
 | Layer | Technology | Purpose |
 |-------|-----------|---------|
@@ -442,6 +462,7 @@ Scenario                                          (standalone, references BOMs b
 | Config | Pydantic-Settings | Environment-driven configuration |
 | Logging | Structlog | Structured, contextual logging |
 | HTTP Client | httpx | Async HTTP for enrichment API calls |
+| Optional LLM | OpenAI-compatible HTTP API (e.g. Ollama) | Tier B/C narrative synthesis |
 | GraphQL | gql | Nexar API client |
 | Frontend | React 18, TypeScript, Vite | SPA with fast HMR |
 | Styling | Tailwind CSS | Utility-first styling |

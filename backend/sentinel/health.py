@@ -43,4 +43,10 @@ async def readiness() -> dict:
 
     checks["enrichment_priority"] = list(settings.enrichment_priority_tuple())
 
+    checks["intelligence"] = {
+        "llm_enabled": settings.llm_enabled,
+        "llm_base_url_configured": bool(settings.llm_base_url),
+        "llm_model": settings.llm_model,
+    }
+
     return {"status": status, "checks": checks}

@@ -88,8 +88,9 @@ Run disruption scenarios and see the impact:
 2. **Enrich**: SENTINEL pulls lifecycle, supply, geographic data from Nexar / SiliconExpert / Z2Data (your choice)
 3. **Score**: Automatic risk calculation across 5 dimensions
 4. **Scenario**: Run disruption scenarios (Taiwan, supplier exit, etc.)
-5. **Export**: Markdown report with findings and recommendations
-6. **Monitor**: Re-score quarterly or on-demand
+5. **Intelligence (optional)**: Ingest public market headlines locally; optional local LLM (e.g. Ollama) explains risk in context with citations—BOM data stays on your machine by default
+6. **Export**: Markdown report with findings and recommendations
+7. **Monitor**: Re-score quarterly or on-demand
 
 **Time from BOM to risk report**: 10 minutes.
 
@@ -116,6 +117,7 @@ Three portfolio companies, three different risk profiles:
 - ✅ 5 scenario types (Country, Supplier, Obsolescence, Component removal, Demand spike)
 - ✅ Portfolio exposure analysis
 - ✅ Export (markdown reports)
+- ✅ Local intelligence layer: Tier B/C narrative (optional LLM + rules fallback), public RSS/CSV market events, redacted prompts by default
 
 ### Q2 2026 (Next)
 - SiliconExpert integration (lifecycle forecasting)

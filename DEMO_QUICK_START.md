@@ -31,9 +31,22 @@ npm run dev
 # 5. API health check
 curl -s http://localhost:8001/docs  # Should load Swagger UI
 curl -s http://localhost:8001/api/health  # Should return OK
+curl -s http://localhost:8001/api/ready   # DB + Nexar + intelligence flags
 ```
 
 **Wait for all services to be healthy before proceeding.**
+
+### Optional: Intelligence layer (local LLM + public headlines)
+
+Full BOMs stay local. Optional narrative uses **Tier B** (scores, MPN, enrichment) + **Tier C** (ingested public RSS/CSV headlines). Configure in `backend/.env`:
+
+```env
+LLM_ENABLED=true
+LLM_BASE_URL=http://127.0.0.1:11434/v1
+LLM_MODEL=llama3.2
+```
+
+With Ollama running, expand a component row in a BOM and use **Intelligence analysis**, or call `POST /api/intelligence/narrative/{component_id}`. To load sample public events: `POST /api/intelligence/market-events/ingest-rss?url=...` (use a real public RSS URL). Without `LLM_ENABLED`, analysis still runs using **rules** + matched events.
 
 ---
 

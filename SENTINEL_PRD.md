@@ -95,15 +95,23 @@ sentinel/
 │   │   │   ├── engine.py           # Scenario simulation engine
 │   │   │   ├── scenarios.py        # Pre-built scenario templates
 │   │   │   └── router.py           # /api/scenarios endpoints
-│   │   └── export/
-│   │       ├── __init__.py
-│   │       └── report.py           # Markdown/PDF report generation
+│   │   ├── export/
+│   │   │   ├── __init__.py
+│   │   │   └── report.py           # Markdown/PDF report generation
+│   │   └── intelligence/
+│   │       ├── policy.py           # Tier A/B/C redaction policy
+│   │       ├── context_packager.py # Minimized LLM payload (Tier B + Tier C)
+│   │       ├── llm_client.py       # OpenAI-compatible chat completions
+│   │       ├── narrative.py        # Rules + optional LLM narrative
+│   │       ├── signals.py          # RSS/CSV market_events ingest + matching
+│   │       └── router.py           # /api/intelligence/* endpoints
 │   └── tests/
 │       ├── conftest.py
 │       ├── test_ingest.py
 │       ├── test_enrichment.py
 │       ├── test_risk.py
-│       └── test_whatif.py
+│       ├── test_whatif.py
+│       └── test_intelligence.py
 ├── frontend/
 │   ├── package.json
 │   ├── vite.config.ts
@@ -956,7 +964,7 @@ A successful PoC demo should show:
 - [ ] Snapshot/trend tracking (delta between enrichment runs)
 - [ ] Monitoring workflow (scheduled re-enrichment)
 - [ ] Second demo BOM (ADALM-PLUTO)
-- [ ] LLM-generated recommendations for high-risk components
+- [x] Structured intelligence narrative (Tier B/C packaging, optional OpenAI-compatible LLM, rules fallback; `market_events` + audit log) — see `intelligence/`
 
 ---
 
@@ -967,6 +975,7 @@ A successful PoC demo should show:
 - `test_enrichment.py`: Mock API responses, cache hit/miss, rate limiting, provider failure isolation
 - `test_risk.py`: Scoring determinism (same input → same output), weight profile application, edge cases (missing enrichment data → scored as "unknown" risk)
 - `test_whatif.py`: Each scenario type produces expected risk deltas, cross-BOM propagation
+- `test_intelligence.py`: Redaction defaults, context packaging, market-event matching
 
 ### Integration Tests
 - Upload BOM → enrich → score → export full pipeline

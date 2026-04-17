@@ -127,6 +127,40 @@ class Snapshot(Base):
     bom: Mapped["Bom"] = relationship(back_populates="snapshots")
 
 
+class MarketEvent(Base):
+    """Tier C — public headlines/snippets ingested locally for grounding narratives."""
+
+    __tablename__ = "market_events"
+    __table_args__ = (Index("idx_market_events_published", "published_at"),)
+
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    title: Mapped[str] = mapped_column(String(500), nullable=False)
+    summary: Mapped[str | None] = mapped_column(Text)
+    source_url: Mapped[str] = mapped_column(String(2000), nullable=False, unique=True)
+    published_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    event_type: Mapped[str | None] = mapped_column(String(50))
+    region_tags: Mapped[list] = mapped_column(JSONB, default=list)
+    keywords: Mapped[list] = mapped_column(JSONB, default=list)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+
+
+class LlmAuditLog(Base):
+    """Audit trail for intelligence/LLM calls (no raw BOM payloads)."""
+
+    __tablename__ = "llm_audit_logs"
+
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+    policy_version: Mapped[str] = mapped_column(String(32), nullable=False)
+    policy_fingerprint: Mapped[str] = mapped_column(String(32), nullable=False)
+    component_token: Mapped[str | None] = mapped_column(String(32))
+    remote_llm: Mapped[bool] = mapped_column(Boolean, default=False)
+    provider: Mapped[str] = mapped_column(String(50), default="openai_compatible")
+    tiers_included: Mapped[list] = mapped_column(JSONB, default=list)
+    payload_chars: Mapped[int] = mapped_column(Integer, default=0)
+    error: Mapped[str | None] = mapped_column(Text)
+
+
 class Scenario(Base):
     __tablename__ = "scenarios"
 

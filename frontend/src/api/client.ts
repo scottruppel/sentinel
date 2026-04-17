@@ -86,4 +86,24 @@ export const api = {
         checks: Record<string, unknown>;
       }>('/ready'),
   },
+
+  intelligence: {
+    settings: () => request<import('../types').IntelligenceSettings>('/intelligence/settings'),
+    narrative: (componentId: string, body: { use_llm?: boolean; allow_remote_llm?: boolean }) =>
+      request<import('../types').NarrativeResponse>(`/intelligence/narrative/${componentId}`, {
+        method: 'POST',
+        body: JSON.stringify(body),
+      }),
+    marketEvents: (limit?: number) =>
+      request<import('../types').MarketEventPublic[]>(
+        `/intelligence/market-events${limit != null ? `?limit=${limit}` : ''}`,
+      ),
+    ingestRss: (url: string, limit?: number) => {
+      const q = new URLSearchParams({ url });
+      if (limit != null) q.set('limit', String(limit));
+      return request<import('../types').IngestResult>(`/intelligence/market-events/ingest-rss?${q}`, {
+        method: 'POST',
+      });
+    },
+  },
 };

@@ -156,3 +156,51 @@ export interface PaginatedResponse<T> {
   page: number;
   per_page: number;
 }
+
+export interface NarrativeCitation {
+  title: string;
+  source_url: string;
+  published_at: string | null;
+  relevance: string;
+}
+
+export interface NarrativeAnalysis {
+  facts_used: string[];
+  interpretation: string;
+  portfolio_impact: string;
+  actions: string[];
+  citations: NarrativeCitation[];
+}
+
+export interface MarketEventPublic {
+  id: string;
+  title: string;
+  summary: string | null;
+  source_url: string;
+  published_at: string | null;
+  event_type: string | null;
+  region_tags: string[];
+  keywords: string[];
+}
+
+export interface NarrativeResponse {
+  analysis: NarrativeAnalysis;
+  source: 'llm' | 'rules';
+  policy_version: string;
+  remote_llm_used: boolean;
+  matched_events: MarketEventPublic[];
+  raw_model_error: string | null;
+}
+
+export interface IntelligenceSettings {
+  llm_enabled: boolean;
+  llm_base_url: string;
+  llm_model: string;
+  policy_version: string;
+}
+
+export interface IngestResult {
+  inserted: number;
+  skipped: number;
+  errors: string[];
+}
