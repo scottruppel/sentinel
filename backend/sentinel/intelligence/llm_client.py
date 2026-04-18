@@ -37,12 +37,41 @@ def _is_localhost_url(url: str) -> bool:
 def may_call_remote_endpoint(allow_remote_llm: bool) -> bool:
     if allow_remote_llm:
         return True
-    return _is_localhost_url(settings.llm_base_url)
+    if _is_localhost_url(settings.llm_base_url):
+        return True
+    # Anthropic is never localhost; if a key is configured, allow (same intent as cloud checkbox).
+    if (settings.llm_provider or "").lower() == "anthropic" and (settings.llm_api_key or "").strip():
+        return True
+    return False
 
 
 def is_local_llm_endpoint() -> bool:
     """True when configured endpoint is localhost (Ollama/LM Studio on same machine)."""
     return _is_localhost_url(settings.llm_base_url)
+
+
+def anthropic_messages_url(base_url: str) -> str:
+    """
+    Build ``POST .../v1/messages`` without duplicating path segments.
+
+    Accepts: ``https://api.anthropic.com``, ``.../v1``, or full ``.../v1/messages``.
+    """
+    b = (base_url or "").strip().rstrip("/")
+    if not b:
+        return "https://api.anthropic.com/v1/messages"
+    path = (urlparse(b).path or "").lower().rstrip("/")
+    if path.endswith("/v1/messages"):
+        return b
+    if path.endswith("/v1"):
+        return f"{b}/messages"
+    if path in ("", "/"):
+        return f"{b}/v1/messages"
+    # Non-empty path that isn't /v1 — avoid double-append; assume user meant host-only typo
+    if not path.startswith("/v1"):
+        p = urlparse(b)
+        host = f"{p.scheme}://{p.netloc}" if p.netloc else b
+        return f"{host.rstrip('/')}/v1/messages"
+    return f"{b}/messages"
 
 
 async def complete_narrative_json(
@@ -55,40 +84,74 @@ async def complete_narrative_json(
     if not settings.llm_enabled:
         return None, "LLM disabled in configuration"
 
+    if (settings.llm_provider or "openai").lower() == "anthropic" and not settings.llm_api_key.strip():
+        return None, "Anthropic requires LLM_API_KEY"
+
     if not may_call_remote_endpoint(allow_remote_llm):
         return None, "Remote LLM blocked: set allow_remote_llm=true or use localhost LLM"
 
-    url = settings.llm_base_url.rstrip("/") + "/chat/completions"
-    body = {
-        "model": settings.llm_model,
-        "messages": [
-            {"role": "system", "content": SYSTEM_PROMPT},
-            {
-                "role": "user",
-                "content": json.dumps(user_payload, default=str),
-            },
-        ],
-        "temperature": 0.2,
-        "max_tokens": settings.llm_max_tokens,
-    }
-    headers: dict[str, str] = {"Content-Type": "application/json"}
-    if settings.llm_api_key:
-        headers["Authorization"] = f"Bearer {settings.llm_api_key}"
+    user_text = json.dumps(user_payload, default=str)
+    provider = (settings.llm_provider or "openai").lower()
+
+    if provider == "anthropic":
+        url = anthropic_messages_url(settings.llm_base_url)
+        body = {
+            "model": settings.llm_model,
+            "max_tokens": settings.llm_max_tokens,
+            "system": SYSTEM_PROMPT,
+            "messages": [{"role": "user", "content": user_text}],
+            "temperature": 0.2,
+        }
+        headers = {
+            "Content-Type": "application/json",
+            "x-api-key": settings.llm_api_key,
+            "anthropic-version": settings.anthropic_api_version,
+        }
+    else:
+        url = settings.llm_base_url.rstrip("/") + "/chat/completions"
+        body = {
+            "model": settings.llm_model,
+            "messages": [
+                {"role": "system", "content": SYSTEM_PROMPT},
+                {"role": "user", "content": user_text},
+            ],
+            "temperature": 0.2,
+            "max_tokens": settings.llm_max_tokens,
+        }
+        headers = {"Content-Type": "application/json"}
+        if settings.llm_api_key:
+            headers["Authorization"] = f"Bearer {settings.llm_api_key}"
 
     try:
         async with httpx.AsyncClient(timeout=120.0) as client:
             resp = await client.post(url, json=body, headers=headers)
             resp.raise_for_status()
             data = resp.json()
+    except httpx.HTTPStatusError as e:
+        detail = ""
+        try:
+            detail = e.response.text[:500]
+        except Exception:
+            pass
+        log.warning("llm_http_error", url=url, status=e.response.status_code, body=detail[:200])
+        return None, f"{e!s} {detail}"
     except Exception as e:
-        log.warning("llm_request_failed", error=str(e))
+        log.warning("llm_request_failed", url=url, error=str(e))
         return None, str(e)
 
-    content = (
-        data.get("choices", [{}])[0]
-        .get("message", {})
-        .get("content", "")
-    )
+    if provider == "anthropic":
+        blocks = data.get("content") or []
+        content = ""
+        for b in blocks:
+            if isinstance(b, dict) and b.get("type") == "text":
+                content = b.get("text") or ""
+                break
+    else:
+        content = (
+            data.get("choices", [{}])[0]
+            .get("message", {})
+            .get("content", "")
+        )
     if not content:
         return None, "Empty LLM response"
 

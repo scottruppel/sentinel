@@ -45,8 +45,10 @@ async def readiness() -> dict:
 
     checks["intelligence"] = {
         "llm_enabled": settings.llm_enabled,
+        "llm_provider": settings.llm_provider,
         "llm_base_url_configured": bool(settings.llm_base_url),
         "llm_model": settings.llm_model,
+        "llm_api_key_configured": bool(settings.llm_api_key),
     }
 
     return {"status": status, "checks": checks}

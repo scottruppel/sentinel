@@ -81,6 +81,7 @@ async def intelligence_settings():
 
     return {
         "llm_enabled": settings.llm_enabled,
+        "llm_provider": settings.llm_provider,
         "llm_base_url": settings.llm_base_url,
         "llm_model": settings.llm_model,
         "policy_version": __import__("sentinel.intelligence.policy", fromlist=["POLICY_VERSION"]).POLICY_VERSION,

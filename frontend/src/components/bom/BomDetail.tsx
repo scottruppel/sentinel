@@ -1,6 +1,16 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { createColumnHelper } from '@tanstack/react-table';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+
+function isLocalLlmBaseUrl(url: string | undefined): boolean {
+  if (!url?.trim()) return true;
+  try {
+    const h = new URL(url).hostname.toLowerCase();
+    return h === 'localhost' || h === '127.0.0.1';
+  } catch {
+    return false;
+  }
+}
 import DataTable from '../common/DataTable';
 import RiskBadge from '../common/Badge';
 import { RiskRadar } from '../common/Charts';
@@ -55,10 +65,17 @@ function SubComponent({ row }: { row: ComponentWithRisk }) {
   const [allowRemoteLlm, setAllowRemoteLlm] = useState(false);
   const [narrative, setNarrative] = useState<NarrativeResponse | null>(null);
 
+  // Claude / any cloud API is non-localhost — backend blocks remote calls unless this is true.
+  useEffect(() => {
+    if (intelSettings?.llm_base_url && !isLocalLlmBaseUrl(intelSettings.llm_base_url)) {
+      setAllowRemoteLlm(true);
+    }
+  }, [intelSettings?.llm_base_url]);
+
   const narrativeMut = useMutation({
     mutationFn: () =>
       api.intelligence.narrative(row.id, {
-        use_llm: useLlm && !!intelSettings?.llm_enabled,
+        use_llm: useLlm,
         allow_remote_llm: allowRemoteLlm,
       }),
     onSuccess: (data) => setNarrative(data),
@@ -129,11 +146,10 @@ function SubComponent({ row }: { row: ComponentWithRisk }) {
           <label className="flex items-center gap-1 cursor-pointer">
             <input
               type="checkbox"
-              checked={useLlm && !!intelSettings?.llm_enabled}
-              disabled={!intelSettings?.llm_enabled}
+              checked={useLlm}
               onChange={(e) => setUseLlm(e.target.checked)}
             />
-            Use LLM (requires LLM_ENABLED)
+            Use LLM
           </label>
           <label className="flex items-center gap-1 cursor-pointer">
             <input
@@ -141,10 +157,12 @@ function SubComponent({ row }: { row: ComponentWithRisk }) {
               checked={allowRemoteLlm}
               onChange={(e) => setAllowRemoteLlm(e.target.checked)}
             />
-            Allow non-localhost LLM
+            Allow non-localhost LLM (required for Claude / cloud APIs)
           </label>
-          {!intelSettings?.llm_enabled && (
-            <span className="text-amber-700">LLM disabled — analysis uses rules + public matches only.</span>
+          {intelSettings && !intelSettings.llm_enabled && (
+            <span className="text-amber-700">
+              Server has LLM_ENABLED=false — set it in .env and restart; analysis will use rules until then.
+            </span>
           )}
         </div>
         <button

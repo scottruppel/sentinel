@@ -9,6 +9,8 @@ from sentinel.risk.router import router as risk_router
 from sentinel.whatif.router import router as whatif_router
 from sentinel.export.router import router as export_router
 from sentinel.intelligence.router import router as intelligence_router
+from sentinel.db.engine import engine
+from sentinel.db.models import Base
 from sentinel.health import readiness
 
 structlog.configure(
@@ -26,6 +28,9 @@ log = structlog.get_logger()
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    # Create any missing tables (e.g. market_events, llm_audit_logs) for DBs seeded before intelligence shipped.
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)
     log.info("sentinel_starting")
     yield
     log.info("sentinel_shutting_down")

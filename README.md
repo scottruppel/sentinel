@@ -57,7 +57,7 @@ After seeding, run the app once so SQLAlchemy can create new tables (`market_eve
 
 ### Optional: local LLM (Ollama)
 
-Set in `backend/.env`:
+Environment variables are read from **`backend/.env` first**, then **repo-root `.env`** if the first file does not exist (so you are not required to duplicate files). Tracked template: [`.env.example`](.env.example). Example for local Ollama:
 
 ```env
 LLM_ENABLED=true
@@ -66,6 +66,22 @@ LLM_MODEL=llama3.2
 ```
 
 Start Ollama and pull a model. Use **Intelligence analysis** on an expanded BOM row in the UI, or `POST /api/intelligence/narrative/{component_id}` with JSON body `{"use_llm": true, "allow_remote_llm": false}`.
+
+### Optional: Anthropic Claude (API)
+
+Do **not** put API keys in `config.py`—use **`backend/.env` or repo-root `.env`** (gitignored). The app calls Anthropic’s **Messages** API (`/v1/messages`), not OpenAI’s `/chat/completions`.
+
+```env
+LLM_ENABLED=true
+LLM_PROVIDER=anthropic
+LLM_BASE_URL=https://api.anthropic.com
+LLM_MODEL=claude-haiku-4-5-20251001
+LLM_API_KEY=your_key_here
+```
+
+Use a [current Claude API model id](https://platform.claude.com/docs/en/about-claude/models/overview); retired snapshots (for example `claude-3-5-haiku-20241022`) return `not_found_error`.
+
+In the UI, enable **Allow non-localhost LLM** when calling Claude (remote endpoint). `GET /api/intelligence/settings` shows `llm_provider`.
 
 ### Optional: market headlines
 

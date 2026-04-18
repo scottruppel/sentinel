@@ -194,6 +194,7 @@ export interface NarrativeResponse {
 
 export interface IntelligenceSettings {
   llm_enabled: boolean;
+  llm_provider?: string;
   llm_base_url: string;
   llm_model: string;
   policy_version: string;
