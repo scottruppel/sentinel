@@ -3,6 +3,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from sentinel.auth import ApiKeyMiddleware
 from sentinel.ingest.router import router as ingest_router
 from sentinel.enrichment.router import router as enrichment_router
 from sentinel.risk.router import router as risk_router
@@ -43,12 +44,14 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
+app.add_middleware(ApiKeyMiddleware)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],
-    allow_credentials=True,
+    # localhost:5173 for local dev; * covers server-to-server agent calls on the tailnet
+    allow_origins=["http://localhost:5173", "*"],
+    allow_credentials=False,
     allow_methods=["*"],
-    allow_headers=["*"],
+    allow_headers=["*", "X-API-Key"],
 )
 
 app.include_router(ingest_router, prefix="/api")

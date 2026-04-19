@@ -39,6 +39,10 @@ class Settings(BaseSettings):
     # Comma-separated source order (first wins per field when merging for scoring/UI)
     enrichment_source_priority: str = "siliconexpert,z2data,nexar,synthetic"
 
+    # Agent API access — set a strong random string; required when TAILSCALE_ENABLED=true
+    sentinel_api_key: str = ""
+    tailscale_enabled: bool = False
+
     # Intelligence — OpenAI-compatible (Ollama, LM Studio) OR Anthropic Messages API (Claude)
     # Set secrets only via environment / .env (never commit keys to this file).
     llm_enabled: bool = False
