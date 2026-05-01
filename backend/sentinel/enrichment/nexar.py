@@ -11,20 +11,21 @@ log = structlog.get_logger()
 NEXAR_TOKEN_URL = "https://identity.nexar.com/connect/token"
 NEXAR_GRAPHQL_URL = "https://api.nexar.com/graphql"
 
+# Field names must match current Nexar schema (see Nexar playground / support docs).
+# ``medianPrice1000`` uses ``quantity`` + ``price`` (not ``price`` + ``currency`` alone).
 NEXAR_MPN_QUERY = """
 query SearchMPN($mpn: String!) {
   supSearchMpn(q: $mpn, limit: 3) {
+    hits
     results {
       part {
         mpn
         manufacturer { name }
-        manufacturerUrl
-        bestDatasheet { url }
         totalAvail
-        medianPrice1000 { price currency }
+        medianPrice1000 { quantity price }
         specs { attribute { name shortname } displayValue }
         sellers {
-          company { name isDistributorApi isAuthorized }
+          company { name isDistributorApi }
           offers {
             inventoryLevel
             moq
@@ -132,7 +133,9 @@ class NexarProvider(EnrichmentProvider):
     def _parse_part(self, part: dict, raw: dict) -> EnrichmentResult:
         total_inventory = part.get("totalAvail", 0)
         sellers = part.get("sellers", [])
-        distributor_count = len([s for s in sellers if s.get("company", {}).get("isAuthorized")])
+        distributor_count = len(
+            [s for s in sellers if s.get("company", {}).get("isDistributorApi")]
+        ) or len(sellers)
 
         lead_days = []
         for seller in sellers:

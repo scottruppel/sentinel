@@ -50,7 +50,7 @@ After seeding, run the app once so SQLAlchemy can create new tables (`market_eve
 
 - **Backend**: Python / FastAPI / SQLAlchemy (async) / PostgreSQL
 - **Frontend**: React / TypeScript / Vite / Tailwind CSS
-- **Enrichment**: Nexar (primary), SiliconExpert, Z2Data (stubs for PoC)
+- **Enrichment**: Mouser & Digi-Key (distributor APIs), Nexar (Octopart), optional SiliconExpert / Z2Data; merge order via `ENRICHMENT_SOURCE_PRIORITY`
 - **Risk Engine**: Rule-based scoring across 5 dimensions with configurable weight profiles
 - **What-If Engine**: 5 scenario types for supply chain disruption simulation
 - **Intelligence (optional)**: Tier B/C packaging with default redaction of BOM/program metadata; public RSS/CSV market events stored locally; optional OpenAI-compatible LLM (e.g. Ollama) for structured narrative + citations. See `backend/sentinel/intelligence/` and `GET /api/intelligence/settings`.

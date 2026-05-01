@@ -9,6 +9,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from sentinel.db.models import Component, EnrichmentRecord
 from sentinel.db.session import get_session
+from sentinel.enrichment.digikey import DigiKeyProvider
+from sentinel.enrichment.mouser import MouserProvider
 from sentinel.enrichment.nexar import NexarProvider
 from sentinel.enrichment.orchestrator import EnrichmentOrchestrator
 from sentinel.enrichment.siliconexpert import SiliconExpertProvider
@@ -19,7 +21,13 @@ router = APIRouter(tags=["enrichment"])
 
 
 def _get_orchestrator() -> EnrichmentOrchestrator:
-    providers = [NexarProvider(), SiliconExpertProvider(), Z2DataProvider()]
+    providers = [
+        MouserProvider(),
+        DigiKeyProvider(),
+        NexarProvider(),
+        SiliconExpertProvider(),
+        Z2DataProvider(),
+    ]
     return EnrichmentOrchestrator(providers)
 
 

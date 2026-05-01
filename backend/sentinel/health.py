@@ -5,6 +5,8 @@ from sqlalchemy import text
 
 from sentinel.config import settings
 from sentinel.db.session import async_session_factory
+from sentinel.enrichment.digikey import DigiKeyProvider
+from sentinel.enrichment.mouser import MouserProvider
 from sentinel.enrichment.nexar import NexarProvider
 
 
@@ -39,6 +41,23 @@ async def readiness() -> dict:
     checks["z2data"] = {
         "api_key_configured": bool(settings.z2data_api_key),
         "lookup_path_set": bool(settings.z2data_lookup_path.strip()),
+    }
+
+    checks["mouser"] = {"api_key_configured": bool((settings.mouser_api_key or "").strip())}
+    dk = DigiKeyProvider()
+    dk_creds = bool((settings.digikey_client_id or "").strip() and (settings.digikey_client_secret or "").strip())
+    if dk_creds:
+        try:
+            tok_ok = await dk.health_check()
+            checks["digikey"] = {"configured": True, "token_ok": tok_ok}
+        except Exception as e:
+            checks["digikey"] = {"configured": True, "token_ok": False, "error": str(e)}
+    else:
+        checks["digikey"] = {"configured": False, "token_ok": False}
+
+    checks["fred"] = {
+        "api_key_configured": bool((settings.fred_api_key or "").strip()),
+        "default_series": settings.fred_series_list(),
     }
 
     checks["enrichment_priority"] = list(settings.enrichment_priority_tuple())

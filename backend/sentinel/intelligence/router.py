@@ -8,7 +8,12 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sentinel.db.session import get_session
 from sentinel.intelligence.narrative import build_narrative
 from sentinel.intelligence.schemas import IngestResult, MarketEventPublic, NarrativeRequest, NarrativeResponse
-from sentinel.intelligence.signals import ingest_csv_bytes, ingest_rss_url, list_recent_events
+from sentinel.intelligence.signals import (
+    ingest_csv_bytes,
+    ingest_fred_observations,
+    ingest_rss_url,
+    list_recent_events,
+)
 
 router = APIRouter(tags=["intelligence"])
 
@@ -54,6 +59,27 @@ async def post_ingest_rss(
     session: AsyncSession = Depends(get_session),
 ):
     stats = await ingest_rss_url(session, url, limit=limit)
+    return IngestResult(
+        inserted=stats.get("inserted", 0),
+        skipped=stats.get("skipped", 0),
+        errors=stats.get("errors", []),
+    )
+
+
+@router.post("/intelligence/market-events/ingest-fred", response_model=IngestResult)
+async def post_ingest_fred(
+    series_ids: str | None = Query(
+        None,
+        description="Comma-separated FRED series ids (default: FRED_DEFAULT_SERIES in settings)",
+    ),
+    limit_per_series: int = Query(1, ge=1, le=24, description="Latest N observations per series"),
+    session: AsyncSession = Depends(get_session),
+):
+    """Ingest macroeconomic observations from FRED into ``market_events`` (``event_type=fred``)."""
+    ids = None
+    if series_ids and series_ids.strip():
+        ids = [s.strip() for s in series_ids.split(",") if s.strip()]
+    stats = await ingest_fred_observations(session, series_ids=ids, limit_per_series=limit_per_series)
     return IngestResult(
         inserted=stats.get("inserted", 0),
         skipped=stats.get("skipped", 0),

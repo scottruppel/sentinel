@@ -12,10 +12,13 @@ import structlog
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from sentinel.config import settings
 from sentinel.db.models import Component, MarketEvent
 from sentinel.enrichment.merge import MergedEnrichment
 
 log = structlog.get_logger()
+
+FRED_API_ROOT = "https://api.stlouisfed.org/fred"
 
 # Regions and topics for naive keyword overlap with titles/summaries
 DEFAULT_KEYWORD_SEEDS = (
@@ -28,6 +31,12 @@ DEFAULT_KEYWORD_SEEDS = (
     "China",
     "memory",
     "foundry",
+    "pmi",
+    "manufacturing",
+    "commodity",
+    "industrial",
+    "trade",
+    "macro",
 )
 
 
@@ -133,8 +142,10 @@ def _parse_pub_date(raw: str | None) -> datetime | None:
         return parsedate_to_datetime(raw)
     except Exception:
         pass
-    for fmt in ("%Y-%m-%dT%H:%M:%S%z", "%Y-%m-%d %H:%M:%S"):
+    for fmt in ("%Y-%m-%dT%H:%M:%S%z", "%Y-%m-%d %H:%M:%S", "%Y-%m-%d"):
         try:
+            if fmt == "%Y-%m-%d" and len(raw) >= 10:
+                return datetime.strptime(raw[:10], fmt).replace(tzinfo=timezone.utc)
             return datetime.strptime(raw[:19], fmt).replace(tzinfo=timezone.utc)
         except ValueError:
             continue
@@ -192,6 +203,116 @@ async def ingest_csv_bytes(session: AsyncSession, data: bytes) -> dict[str, Any]
         inserted += 1
 
     await session.commit()
+    return {"inserted": inserted, "skipped": skipped, "errors": errors}
+
+
+async def ingest_fred_observations(
+    session: AsyncSession,
+    series_ids: list[str] | None = None,
+    limit_per_series: int = 1,
+) -> dict[str, Any]:
+    """
+    Pull latest observations from FRED (St. Louis Fed) and store as ``market_events``
+    with ``event_type=fred``. Requires ``FRED_API_KEY`` / ``fred_api_key`` in settings.
+
+    Each observation is keyed by a stable ``fred://`` URL so re-ingest skips duplicates.
+    """
+    api_key = (settings.fred_api_key or "").strip()
+    if not api_key:
+        return {"inserted": 0, "skipped": 0, "errors": ["FRED API key not configured (fred_api_key)"]}
+
+    ids = [s.strip() for s in (series_ids or settings.fred_series_list()) if s.strip()]
+    if not ids:
+        return {"inserted": 0, "skipped": 0, "errors": ["No FRED series ids provided"]}
+
+    inserted = 0
+    skipped = 0
+    errors: list[str] = []
+
+    async with httpx.AsyncClient(timeout=60.0) as client:
+        for sid in ids:
+            title = sid
+            units: str | None = None
+            try:
+                meta_r = await client.get(
+                    f"{FRED_API_ROOT}/series",
+                    params={"series_id": sid, "api_key": api_key, "file_type": "json"},
+                )
+                meta_r.raise_for_status()
+                mj = meta_r.json()
+                seriess = mj.get("seriess") or mj.get("series") or []
+                if isinstance(seriess, list) and seriess and isinstance(seriess[0], dict):
+                    title = seriess[0].get("title") or sid
+                    units = seriess[0].get("units")
+            except Exception as e:
+                log.warning("fred_series_meta_failed", series_id=sid, error=str(e))
+                errors.append(f"{sid} meta: {e}")
+
+            try:
+                obs_r = await client.get(
+                    f"{FRED_API_ROOT}/series/observations",
+                    params={
+                        "series_id": sid,
+                        "api_key": api_key,
+                        "file_type": "json",
+                        "sort_order": "desc",
+                        "limit": limit_per_series,
+                    },
+                )
+                obs_r.raise_for_status()
+                oj = obs_r.json()
+            except Exception as e:
+                log.warning("fred_observations_failed", series_id=sid, error=str(e))
+                errors.append(f"{sid} observations: {e}")
+                continue
+
+            observations = oj.get("observations") or []
+            if not isinstance(observations, list):
+                continue
+
+            for ob in observations:
+                if not isinstance(ob, dict):
+                    continue
+                d = ob.get("observation_date") or ob.get("date")
+                val = ob.get("value")
+                if val == "." or val is None:
+                    continue
+                if not d:
+                    continue
+                source_url = f"fred://observations/{sid}/{d}"
+                existing = await session.execute(select(MarketEvent).where(MarketEvent.source_url == source_url))
+                if existing.scalar_one_or_none():
+                    skipped += 1
+                    continue
+
+                summary_lines = [
+                    f"FRED series `{sid}`",
+                    f"Title: {title}",
+                    f"Latest observation date: {d}",
+                    f"Value: {val}",
+                ]
+                if units:
+                    summary_lines.append(f"Units: {units}")
+                summary = "\n".join(summary_lines)[:8000]
+
+                title_ev = f"{sid}: {title}"[:500]
+                region_tags, keywords = _derive_tags_keywords(title_ev, summary)
+                keywords = list(dict.fromkeys(keywords + [sid.lower(), "fred", "macro"]))[:40]
+
+                ev = MarketEvent(
+                    title=title_ev,
+                    summary=summary,
+                    source_url=source_url[:2000],
+                    published_at=_parse_pub_date(str(d)) if d else None,
+                    event_type="fred",
+                    region_tags=region_tags,
+                    keywords=keywords,
+                )
+                session.add(ev)
+                inserted += 1
+
+    await session.commit()
+    log.info("fred_ingest_done", inserted=inserted, skipped=skipped, series=len(ids))
     return {"inserted": inserted, "skipped": skipped, "errors": errors}
 
 
