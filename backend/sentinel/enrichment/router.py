@@ -19,16 +19,18 @@ from sentinel.enrichment.z2data import Z2DataProvider
 log = structlog.get_logger()
 router = APIRouter(tags=["enrichment"])
 
+# Singletons so token state (DigiKey, Nexar) persists across requests
+_PROVIDERS = [
+    MouserProvider(),
+    DigiKeyProvider(),
+    NexarProvider(),
+    SiliconExpertProvider(),
+    Z2DataProvider(),
+]
+
 
 def _get_orchestrator() -> EnrichmentOrchestrator:
-    providers = [
-        MouserProvider(),
-        DigiKeyProvider(),
-        NexarProvider(),
-        SiliconExpertProvider(),
-        Z2DataProvider(),
-    ]
-    return EnrichmentOrchestrator(providers)
+    return EnrichmentOrchestrator(_PROVIDERS)
 
 
 @router.post("/enrichment/run/{bom_id}")

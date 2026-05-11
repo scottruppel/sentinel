@@ -78,7 +78,7 @@ def _parse_product(prod: dict, raw: dict) -> EnrichmentResult:
     rohs_ok: bool | None = None
     if isinstance(rohs, str):
         ru = rohs.upper()
-        if "COMPLIANT" in ru or rohs == "RoHS Compliant":
+        if "COMPLIANT" in ru:
             rohs_ok = "NON" not in ru
 
     return EnrichmentResult(

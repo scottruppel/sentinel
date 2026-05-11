@@ -1,12 +1,22 @@
-import { defineConfig } from 'vite'
+import { defineConfig, loadEnv } from 'vite'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 
-export default defineConfig({
-  plugins: [react(), tailwindcss()],
-  server: {
-    proxy: {
-      '/api': 'http://localhost:8001',
+export default defineConfig(({ mode }) => {
+  const env = loadEnv(mode, process.cwd(), '')
+  const target = env.VITE_API_TARGET || 'http://localhost:8001'
+  const apiKey = env.VITE_API_KEY
+
+  return {
+    plugins: [react(), tailwindcss()],
+    server: {
+      proxy: {
+        '/api': {
+          target,
+          changeOrigin: true,
+          ...(apiKey ? { headers: { 'X-API-Key': apiKey } } : {}),
+        },
+      },
     },
-  },
+  }
 })
