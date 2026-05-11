@@ -14,8 +14,8 @@ uv venv && uv pip install -e ".[dev]"
 # Start DB (required before backend)
 docker-compose up -d
 
-# Run backend (API at http://localhost:8001/docs)
-.venv/bin/uvicorn sentinel.main:app --reload --port 8001
+# Run backend (API at http://localhost:8002/docs)
+.venv/bin/uvicorn sentinel.main:app --reload --port 8002
 
 # Apply DB migrations
 .venv/bin/alembic upgrade head
@@ -102,7 +102,7 @@ Composite = weighted sum via `RiskWeightProfile` (`risk/weights.py`). Multiple n
 
 ### Frontend
 
-React + TypeScript + Vite + Tailwind. API base URL defaults to `http://localhost:8001`. Pages and components live under `frontend/src/pages/` and `frontend/src/components/`.
+React + TypeScript + Vite + Tailwind. API base URL defaults to `http://localhost:8002`. Pages and components live under `frontend/src/pages/` and `frontend/src/components/`.
 
 ### Database
 
