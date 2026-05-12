@@ -1,0 +1,21 @@
+MPN,Manufacturer,Description,Quantity,Ref Des,Package,Category
+STM32H743ZIT6,STMicroelectronics,32-bit ARM Cortex-M7 MCU 2MB Flash 1MB RAM,1,U1,LQFP-144,Microcontroller
+XC7A100T-2CSG324C,Xilinx,Artix-7 FPGA 101K Logic Cells,1,U2,CSG324,FPGA
+BCM58402A0KFSBG,Broadcom,Quad-core ARM Cortex-A9 Network Processor,1,U3,FCBGA-1156,Network Processor
+MT29F4G08ABADAWPD-IT:D,Micron,4Gb NAND Flash 3.3V Industrial,2,U4 U5,TSOP-48,Flash Memory
+IS43TR16256BL-125KBLI,ISSI,4Gb DDR3L SDRAM 800MHz Industrial,4,U6 U7 U8 U9,FBGA-96,DRAM
+TPS62130ARGTR,Texas Instruments,3A 17V Step-Down DC-DC Converter,3,U10 U11 U12,VQFN-20,Power Management
+LTC2974CUFD#PBF,Analog Devices,Quad Channel Power System Manager,1,U13,QFN-64,Power Management
+ADIS16488AMLZ,Analog Devices,10-DOF Tactical-Grade IMU,1,U14,Module,Inertial Sensor
+MAX3232ECAE+T,Maxim Integrated,3V to 5.5V RS-232 Transceiver,2,U15 U16,SSOP-16,Interface
+CC2642R1FRGZR,Texas Instruments,SimpleLink Bluetooth 5.1 MCU,1,U17,VQFN-48,Wireless MCU
+SN74LVC245APWR,Texas Instruments,Octal Bus Transceiver 3-State,6,U18 U19 U20 U21 U22 U23,TSSOP-20,Logic
+M24512-DRDW8TP/K,STMicroelectronics,512Kbit I2C EEPROM Industrial,2,U24 U25,SO-8,Memory
+DS3231SN#,Maxim Integrated,Extremely Accurate I2C RTC with TCXO,1,U26,SOIC-16,Timing
+IRF7836PBF,Infineon Technologies,N-Channel 30V Power MOSFET,8,Q1 Q2 Q3 Q4 Q5 Q6 Q7 Q8,SO-8,MOSFET
+BMP388,Bosch Sensortec,Digital Barometric Pressure Sensor,1,U27,LGA-10,Sensor
+GRM219R71H104KA93D,Murata,100nF 50V X7R MLCC 0805,120,C1-C120,0805,Capacitor
+GRM31CR61A476ME15L,Murata,47uF 10V X5R MLCC 1206,24,C121-C144,1206,Capacitor
+CRCW04021K00FKED,Vishay,1kOhm 1% 0.063W Thick Film Resistor,60,R1-R60,0402,Resistor
+CRCW040210K0FKED,Vishay,10kOhm 1% 0.063W Thick Film Resistor,45,R61-R105,0402,Resistor
+5-1734839-0,TE Connectivity,MTA-100 20-Pin Right Angle Header,3,J1 J2 J3,Through-hole,Connector
