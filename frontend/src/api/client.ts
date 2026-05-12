@@ -1,4 +1,9 @@
 const BASE_URL = '/api';
+const API_KEY = import.meta.env.VITE_API_KEY as string | undefined;
+
+function authHeaders(): Record<string, string> {
+  return API_KEY ? { 'X-API-Key': API_KEY } : {};
+}
 
 class ApiError extends Error {
   readonly status: number;
@@ -13,7 +18,7 @@ class ApiError extends Error {
 async function request<T>(path: string, options?: RequestInit): Promise<T> {
   const url = `${BASE_URL}${path}`;
   const res = await fetch(url, {
-    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    headers: { 'Content-Type': 'application/json', ...authHeaders(), ...options?.headers },
     ...options,
   });
   if (!res.ok) {
@@ -41,7 +46,7 @@ export const api = {
       form.append('name', name);
       if (program) form.append('program', program);
       if (description) form.append('description', description);
-      const res = await fetch(`${BASE_URL}/boms/upload`, { method: 'POST', body: form });
+      const res = await fetch(`${BASE_URL}/boms/upload`, { method: 'POST', body: form, headers: authHeaders() });
       if (!res.ok) throw new ApiError(res.status, await res.text());
       return res.json();
     },
