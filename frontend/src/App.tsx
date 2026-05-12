@@ -8,7 +8,9 @@ import WhatIf from './pages/WhatIf';
 import CrossExposure from './pages/CrossExposure';
 
 const queryClient = new QueryClient({
-  defaultOptions: { queries: { staleTime: 30_000, retry: 1 } },
+  defaultOptions: {
+    queries: { staleTime: 60_000, retry: 1, refetchOnWindowFocus: false },
+  },
 });
 
 export default function App() {
